@@ -10,11 +10,11 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class CommonExceptionAdvice {
 	
-	@ExceptionHandler(Exception.class)
+	@ExceptionHandler(LoginException.class)
 	public String except(Exception e, Model model) {
 		log.error("오류 핸들러 : " + e.getMessage());
 		model.addAttribute("exception", e);
-		return "error_page";
+		return "login_error_page";
 	}
 
 }

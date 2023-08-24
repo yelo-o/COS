@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.zerock.domain.MemberDTO;
+import com.zerock.exception.LoginException;
 
 import lombok.extern.log4j.Log4j;
 
@@ -43,7 +44,7 @@ public class HomeController {
 	*/
 	
 	@GetMapping("/success")
-	public String success(MemberDTO member, Model model) throws Exception {
+	public String loginSuccess(MemberDTO member, Model model) throws LoginException {
 		log.info(member.getId());
 		log.info(member.getPassword());
 		model.addAttribute("id", member.getId());
@@ -51,7 +52,7 @@ public class HomeController {
 		if(member.getId().equals("admin") && member.getPassword().equals("pwd")) {
 			return "success";
 		} else {
-			throw new Exception("아이디와 비밀번호가 다릅니다. " + 
+			throw new LoginException("아이디와 비밀번호가 다릅니다. " + 
 					"입력한 ID : " + member.getId() +
 					", 입력한 비밀번호 : " + member.getPassword());
 		}
