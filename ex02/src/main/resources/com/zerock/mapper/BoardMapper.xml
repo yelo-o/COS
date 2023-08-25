@@ -23,7 +23,7 @@
 		]]>
 	</insert>
 	
-	<insert id="insertSelectKey">
+	<!-- <insert id="insertSelectKey"> !!오라클용 쿼리!!
 		<selectKey keyProperty="bno" order="BEFORE"
 			resultType="long">
 		<![CDATA[
@@ -34,6 +34,11 @@
 		insert into tbl_board(title, content, writer)
 		values(#{title}, #{content}, #{writer})
 		]]>
+	</insert> -->
+	
+	<insert id="insertSelectKey" parameterType="com.zerock.domain.BoardVO" useGeneratedKeys="true" keyProperty="bno">
+		insert into tbl_board(title, content, writer)
+		values(#{title}, #{content}, #{writer})
 	</insert>
 	
 	<delete id="delete">
