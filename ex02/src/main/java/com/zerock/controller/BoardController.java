@@ -37,31 +37,50 @@ public class BoardController {
 	public String register(BoardVO board, RedirectAttributes rttr) {
 		log.info("register:" + board);
 		service.register(board);
+		rttr.addFlashAttribute("origin", "register");
 		rttr.addFlashAttribute("result", board.getBno());
 		return "redirect:/board/list";
 	}
 	
 	@GetMapping("/get")
-	public void get(long bno) {
+	public void get(long bno, Model model) {
 		log.info("get : " + bno);
 		BoardVO board = service.get(bno);
+		model.addAttribute("board", board);
 		log.info("result : " + board);
+	}
+	@GetMapping("/modify")
+	public void modify(long bno, Model model) {
+		log.info("modify : " + bno);
+		BoardVO board = service.get(bno);
+		model.addAttribute("board", board);
 	}
 	
 	@PostMapping("/modify")
-	public String modify(BoardVO board) {
+	public String modify(BoardVO board, RedirectAttributes rttr) {
 		log.info("moify : " + board);
 		boolean result = service.modify(board);
+		rttr.addFlashAttribute("origin", "modify");
+		if (result) {
+			rttr.addFlashAttribute("result", board.getBno());
+		} else {
+			rttr.addFlashAttribute("result", -1);
+		}
 		log.info("result : " + result);
-		return "/board/list";
-		
+		return "redirect:/board/list";
 	}
 	
-	@PostMapping("/delete")
-	public String delete(long bno) {
-		log.info("delete : " + bno);
+	@PostMapping("/remove")
+	public String delete(long bno, RedirectAttributes rttr) {
+		log.info("remove : " + bno);
 		boolean result = service.remove(bno);
 		log.info("result : " + result);
-		return "/board/list";
+		rttr.addFlashAttribute("origin", "remove");
+		if (result) {
+			rttr.addFlashAttribute("result", bno);
+		} else {
+			rttr.addFlashAttribute("result", -1);
+		}
+		return "redirect:/board/list";
 	}
 }

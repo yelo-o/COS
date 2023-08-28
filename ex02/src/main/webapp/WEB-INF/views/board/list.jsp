@@ -10,6 +10,9 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             게시판 리스트
+                            <button id="regBtn" type="button" class="btn btn-xs pull-right">
+                            새 게시물 등록
+                            </button>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -27,7 +30,7 @@
                                 <c:forEach items="${list}" var="board">
                                 <tr>
                                 	<td>${board.bno}</td>
-                                	<td>${board.title}</td>
+                                	<td><a href="/board/get?bno=${board.bno}">${board.title}</a></td>
                                 	<td>${board.writer}</td>
                                 	<td>
                                 		<fmt:formatDate pattern="yyyy-MM-dd" value="${board.regDate}" />
@@ -37,7 +40,7 @@
                                 	</td>
                                 </tr>
                                 </c:forEach>
-                                 </tbody>
+                                </tbody>
                                 
                             </table>
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labeldby="myModalLabel">
@@ -48,7 +51,7 @@
 										      aria-hidden="true">&times;</button>
 										   <h4 class="modal-title" id="myModalLabel">Modal title</h4>
 										</div>
-										<div class="modal-header">처리가 완료되었습니다.</div>
+										<div class="modal-body">처리가 완료되었습니다.</div>
 										<div class="modal-footer">
 										   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 										   <button type="button" class="btn btn-primary">Save Changes</button>
@@ -67,19 +70,46 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+	var origin= '${origin}';
+	/* var result = parseInt('${result}'); */
 	var result = '${result}';
-	checkModal(result);
 	
-	function checkModal(result) {
-		if (result == '') {
+	checkModal(origin);
+	
+	//self.history.replaceState({}, null, null);
+	
+	function checkModal(origin) {
+		
+		if (origin == '') {
 			return;
 		}
 		
-		if (parseInt(result) > 0) {
-			$(".modal-body").html("게시글" + parseInt(result) + " 번이 등록되었습니다.");
+		if (origin == "register") {
+			if (result > 0) {
+				$(".modal-body").html("게시글 " + result + " 번이 등록되었습니다.");
+			}
+		} else if (origin == "modify") {
+			if (result > 0) {
+				$(".modal-body").html("게시글 " + result + " 번이 수정되었습니다.");
+			} else {
+				$(".modal-body").html("게시글 수정 실패");
+			}
+		} else if (origin == "remove") {
+			if (result > 0) {
+				$(".modal-body").html("게시글 " + result + " 번이 삭제되었습니다.");
+			} else {
+				$(".modal-body").html("게시글 삭제 실패");
+			}
+			
+		} else {
+			return;
 		}
 		$('#myModal').modal("show");
 	}
 	
+	$('#regBtn').click(()=>{
+		location.href='/board/register';
+	})
 });
+
 </script>
