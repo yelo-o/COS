@@ -14,6 +14,9 @@
 	<logger name="com.zerock.controller">
 		<level value="info" />
 	</logger>
+	<logger name="com.zerock.service">
+		<level value="info" />
+	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
@@ -29,6 +32,12 @@
 	</logger>
 
 	<logger name="org.springframework.web">
+		<level value="info" />
+	</logger>
+	<logger name="jdbc.resultsettable">
+		<level value="info" />
+	</logger>
+	<logger name="jdbc.sqlonly">
 		<level value="info" />
 	</logger>
 
