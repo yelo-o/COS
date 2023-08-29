@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.zerock.mapper.BoardMapper">
+
+	<select id="getList" resultType="com.zerock.domain.BoardVO">
+		<![CDATA[
+		SELECT * FROM bbs_board WHERE bno > 0 ORDER BY bno DESC  
+		]]>
+	</select>
+	
+	<select id="read" resultType="com.zerock.domain.BoardVO">
+		<![CDATA[
+		SELECT * FROM bbs_board WHERE bno = #{bno}  
+		]]>
+	</select>
+	
+	<insert id="insert">
+		<![CDATA[
+		INSERT INTO bbs_board(title, content, writer)
+		VALUES(#{title}, #{content}, #{writer})  
+		]]>
+	</insert>
+	
+	<insert id="insertSelectKey" parameterType="com.zerock.domain.BoardVO" useGeneratedKeys="true" keyProperty="bno">
+		INSERT INTO bbs_board(title, content, writer)
+		VALUES(#{title}, #{content}, #{writer})
+	</insert>
+
+	<delete id="delete">
+		<![CDATA[
+		DELETE FROM bbs_board WHERE bno = #{bno}
+		]]>
+	</delete>
+	
+	<update id="update">
+		<![CDATA[
+		UPDATE bbs_board
+		SET title = #{title}, content = #{content}, writer = #{writer}, updateDate = current_timestamp
+		WHERE bno = #{bno}
+		]]>
+	</update>
+	
+</mapper>
