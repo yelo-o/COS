@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zerock.domain.BoardVO;
+import com.zerock.domain.Criteria;
 import com.zerock.mapper.BoardMapper;
 
 import lombok.Setter;
@@ -19,9 +20,9 @@ public class BoardServiceImpl implements BoardService {
 	private BoardMapper mapper;
 	
 	@Override
-	public List<BoardVO> getList() {
-		log.info("getList : ");
-		return mapper.getList();
+	public List<BoardVO> getList(Criteria cri) {
+		log.info("getList with criteria : " + cri);
+		return mapper.getListWithPaging(cri);
 	}
 
 	@Override

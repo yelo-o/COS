@@ -10,6 +10,15 @@
 		]]>
 	</select>
 	
+	<select id="getListWithPaging" resultType="com.zerock.domain.BoardVO">
+		<![CDATA[
+		SELECT @rownum := @rownum + 1 rownumber, bno, title, content, writer, regDate, updateDate
+		FROM tbl_board,(SELECT @rownum := 0) rownum
+		limit #{amount} offset #{pageNum} 
+		]]>
+	</select>
+		<!-- limit (#{pageNum} -1) * #{amount} offset #{pageNum} * #{amount} -->
+	
 	<select id="read" resultType="com.zerock.domain.BoardVO">
 		<![CDATA[
 		select * from tbl_board where bno = #{bno}
