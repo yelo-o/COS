@@ -12,12 +12,17 @@
 	
 	<select id="getListWithPaging" resultType="com.zerock.domain.BoardVO">
 		<![CDATA[
-		SELECT @rownum := @rownum + 1 rownumber, bno, title, content, writer, regDate, updateDate
-		FROM tbl_board,(SELECT @rownum := 0) rownum
-		limit #{amount} offset #{pageNum} 
+		SELECT * FROM (
+    	SELECT *, 
+        ROW_NUMBER() OVER (ORDER BY bno) AS row_num
+    	FROM tbl_board) AS numbered_rows
+		WHERE row_num BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum}) * #{amount};
 		]]>
 	</select>
-		<!-- limit (#{pageNum} -1) * #{amount} offset #{pageNum} * #{amount} -->
+	
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*) FROM tbl_board
+	</select>
 	
 	<select id="read" resultType="com.zerock.domain.BoardVO">
 		<![CDATA[

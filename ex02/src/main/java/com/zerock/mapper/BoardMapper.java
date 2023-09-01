@@ -9,6 +9,7 @@ public interface BoardMapper {
 	//@Select("select * from tbl_board")
 	//public List<BoardVO> getList();
 	public List<BoardVO> getListWithPaging(Criteria cri);
+	public int getTotalCount();
 
 	public void insert(BoardVO board);
 	public void insertSelectKey(BoardVO board);

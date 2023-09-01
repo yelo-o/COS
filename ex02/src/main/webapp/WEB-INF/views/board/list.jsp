@@ -30,7 +30,7 @@
                                 <c:forEach items="${list}" var="board">
                                 <tr>
                                 	<td>${board.bno}</td>
-                                	<td><a href="/board/get?bno=${board.bno}">${board.title}</a></td>
+                                	<td><a class="move" href="${board.bno}">${board.title}</a></td>
                                 	<td>${board.writer}</td>
                                 	<td>
                                 		<fmt:formatDate pattern="yyyy-MM-dd" value="${board.regDate}" />
@@ -41,8 +41,56 @@
                                 </tr>
                                 </c:forEach>
                                 </tbody>
-                                
                             </table>
+                            
+                            <!-- 서치폼 시작 -->
+                            <form id="seachForm" method="get" action="/board/list">
+				               <select name="type">
+				                  <option value="">--</option>
+				                  <option value="T">제목</option>
+				                  <option value="C">내용</option>
+				                  <option value="W">작성자</option>
+				                  <option value="TC">제목 + 내용</option>
+				                  <option value="TW">내용 + 작성자</option>
+				                  <option value="CW">내용 + 작성자</option>
+				                  <option value="TCW">제목 + 내용 + 작성자</option>
+				               </select> <input type="text" name="keyword" /> <input type="hidden"
+				                  name="pageNum" value="${pageMaker.cri.pageNum}" /> <input
+				                  type="hidden" name="amount" value="${pageMaker.cri.amount}" />
+				               <button>검색</button>
+				            </form>        
+                            <!-- 서치폼 끝 -->
+				            
+                            <!-- 페이지네이션 시작 -->
+                            <div class="pull-right">
+                            	<ul class="pagination">
+                            		<c:if test="${pageMaker.prev}">
+                            			<li class="paginate_button previous">
+                            				<a href="${pageMaker.startPage-1}">Previous</a>
+                           				</li>
+                            		</c:if>
+                            		
+                            		<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+	                            		<li class="paginate_button ${pageMaker.cri.pageNum == num ? "active":""} ">
+	                            			<a href="${num}">${num}</a>
+	                            		</li>
+                            		</c:forEach>
+                            		
+                            		<c:if test="${pageMaker.next}">
+                            			<li class="paginate_button next">
+                            				<a href="${pageMaker.endPage + 1}">Next</a>
+                            			</li>
+                            		</c:if>
+                            	</ul>
+                            </div>
+                            <!-- 페이지네이션 종료 -->
+                            
+                            <form id="actionForm" method="get" action="/board/list">
+                            	<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+                            	<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+                            </form>
+                            
+                            
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labeldby="myModalLabel">
 								<div class="modal-dialog">
 									<div class="modal-content">
@@ -110,6 +158,25 @@ $(document).ready(function() {
 	$('#regBtn').click(()=>{
 		location.href='/board/register';
 	})
+	
+	var actionForm = $("#actionForm");
+	
+	$('.paginate_button a').on("click", function(e) {
+		e.preventDefault();
+		if (actionForm.find("input[name='pageNum']").val() == $(this).attr("hef")){
+			return;
+		}
+		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+		actionForm.submit();
+	});
+	
+	$(".move").on("click", function(e) {
+		e.preventDefault();
+		actionForm.append("<input type='hidden' name='bno' value='"
+				+ $(this).attr("href") + "'>");
+		actionForm.attr("action", "/board/get");
+		actionForm.submit();
+	});
 });
 
 </script>

@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.zerock.domain.BoardVO;
 import com.zerock.domain.Criteria;
+import com.zerock.domain.pageDTO;
 import com.zerock.service.BoardService;
 
 import lombok.Setter;
@@ -33,6 +36,8 @@ public class BoardController {
 	public void list(Criteria cri, Model model) {
 		log.info("list : " + cri);
 		model.addAttribute("list", service.getList(cri));
+		//model.addAttribute("pageMaker", new pageDTO(cri, 1000)); //최대갯수 계산하기 전에 임의로 넣은 값
+		model.addAttribute("pageMaker", new pageDTO(cri, service.getCount()));
 	}
 	
 	@GetMapping("/register")
@@ -49,19 +54,26 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	@GetMapping("/get")
-	public void get(long bno, Model model) {
-		log.info("get : " + bno);
-		BoardVO board = service.get(bno);
-		model.addAttribute("board", board);
-		log.info("result : " + board);
+	@GetMapping({"/get", "/modify"})
+	public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, Model model) {
+		log.info("/get or modify");
+		model.addAttribute("board", service.get(bno));
 	}
-	@GetMapping("/modify")
-	public void modify(long bno, Model model) {
-		log.info("modify : " + bno);
-		BoardVO board = service.get(bno);
-		model.addAttribute("board", board);
-	}
+	
+//	@GetMapping("/get")
+//	public void get(long bno, Criteria cri, Model model) {
+//		log.info("get : " + bno);
+//		log.info("cri : " + cri);
+//		BoardVO board = service.get(bno);
+//		model.addAttribute("board", board);
+//		log.info("result : " + board);
+//	}
+//	@GetMapping("/modify")
+//	public void modify(long bno, Model model) {
+//		log.info("modify : " + bno);
+//		BoardVO board = service.get(bno);
+//		model.addAttribute("board", board);
+//	}
 	
 	@PostMapping("/modify")
 	public String modify(BoardVO board, RedirectAttributes rttr) {

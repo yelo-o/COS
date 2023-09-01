@@ -13,6 +13,8 @@
                 <!-- /.panel-heading -->
 				<div class="panel-body">
 					<form method="post" action="/board/modify">
+						<input type="hidden" name="pageNum" value="${cri.pageNum}">
+						<input type="hidden" name="amount" value="${cri.amount}">
 						<div class="form-group">
 							<label>글번호</label>
 							<input class="form-control" name="bno" value="${board.bno}" readonly="readonly">

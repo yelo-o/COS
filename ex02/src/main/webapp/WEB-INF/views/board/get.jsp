@@ -30,8 +30,11 @@
 					</div>
 					<button class="btn btn-default" data-oper="modify">수정하기</button>
 					<button class="btn btn-info" data-oper="list">리스트로</button>
+					
 					<form id="operForm" method="get" action="/board/modify">
 						<input id="bno" type="hidden" name="bno" value="${board.bno} ">
+						<input type="hidden" name="pageNum" value="${cri.pageNum} ">
+						<input type="hidden" name="amount" value="${cri.amount} ">
 					</form>
 				</div>
                 <!-- /.panel-body -->
