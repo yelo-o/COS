@@ -34,10 +34,12 @@ public class BoardController {
 	
 	@GetMapping("/list")
 	public void list(Criteria cri, Model model) {
-		log.info("list : " + cri);
+		log.info("list 요청 : " + cri);
 		model.addAttribute("list", service.getList(cri));
-		//model.addAttribute("pageMaker", new pageDTO(cri, 1000)); //최대갯수 계산하기 전에 임의로 넣은 값
-		model.addAttribute("pageMaker", new pageDTO(cri, service.getCount()));
+		//model.addAttribute("pageMaker", new pageDTO(cri, 1000)); //최대개수 계산하기 전에 임의로 넣은 값
+		int total = service.getTotal(cri);
+		log.info("total : " + total);
+		model.addAttribute("pageMaker", new pageDTO(cri, total));
 	}
 	
 	@GetMapping("/register")
@@ -54,11 +56,7 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	@GetMapping({"/get", "/modify"})
-	public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, Model model) {
-		log.info("/get or modify");
-		model.addAttribute("board", service.get(bno));
-	}
+	
 	
 //	@GetMapping("/get")
 //	public void get(long bno, Criteria cri, Model model) {
@@ -76,18 +74,23 @@ public class BoardController {
 //	}
 	
 	@PostMapping("/modify")
-	public String modify(BoardVO board, RedirectAttributes rttr) {
-		log.info("moify : " + board);
-		boolean result = service.modify(board);
-		rttr.addFlashAttribute("origin", "modify");
-		if (result) {
-			rttr.addFlashAttribute("result", board.getBno());
-		} else {
-			rttr.addFlashAttribute("result", -1);
-		}
-		log.info("result : " + result);
-		return "redirect:/board/list";
-	}
+	   public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	      log.info("modify:" + board);
+	      log.info("cri:" + cri);
+	      boolean result = service.modify(board);
+	      log.info("result:" + result);
+	      rttr.addFlashAttribute("origin", "modify");
+	      if (result)
+	         rttr.addFlashAttribute("result", board.getBno());
+	      else
+	         rttr.addFlashAttribute("result", -1);
+	      rttr.addAttribute("pageNum", cri.getPageNum());
+	      rttr.addAttribute("amount", cri.getAmount());
+	      rttr.addAttribute("type", cri.getType());
+	      rttr.addAttribute("keyword", cri.getKeyword());
+	      return "redirect:/board/list";
+	   }
+
 	
 	@PostMapping("/remove")
 	public String delete(long bno, RedirectAttributes rttr) {
@@ -101,5 +104,14 @@ public class BoardController {
 			rttr.addFlashAttribute("result", -1);
 		}
 		return "redirect:/board/list";
+	}
+	
+	@GetMapping({"/get", "/modify"})
+	public void get(long bno, @ModelAttribute("cri") Criteria cri, Model model) {
+//		log.info("get:" + bno);
+//		log.info("criteria:" + cri);
+		BoardVO board =service.get(bno);
+		model.addAttribute("board", board);
+		log.info("result:" + board);
 	}
 }

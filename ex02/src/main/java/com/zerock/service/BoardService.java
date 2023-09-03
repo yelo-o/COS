@@ -9,7 +9,7 @@ public interface BoardService {
 
 	//public List<BoardVO> getList();
 	public List<BoardVO> getList(Criteria cri);
-	public int getCount();
+	public int getTotal(Criteria cri);
 	
 	public void register(BoardVO board);
 	public BoardVO get(long bno);

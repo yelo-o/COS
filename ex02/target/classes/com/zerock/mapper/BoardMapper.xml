@@ -4,13 +4,34 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.zerock.mapper.BoardMapper">
+
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item="searchCondition" collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="searchCondition == 'T'.toString()">
+							title like CONCAT('%', #{keyword}, '%')
+						</when>
+						<when test="searchCondition == 'C'.toString()">
+							content like CONCAT('%', #{keyword}, '%')
+						</when>
+						<when test="searchCondition == 'W'.toString()">
+							writer like CONCAT('%', #{keyword}, '%')
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
 	<select id="getList" resultType="com.zerock.domain.BoardVO">
 		<![CDATA[
 		select * from tbl_board where bno > 0 order by bno desc
 		]]>
 	</select>
 	
-	<select id="getListWithPaging" resultType="com.zerock.domain.BoardVO">
+	<!-- <select id="getListWithPaging" resultType="com.zerock.domain.BoardVO">
 		<![CDATA[
 		SELECT * FROM (
     	SELECT *, 
@@ -18,13 +39,36 @@
     	FROM tbl_board) AS numbered_rows
 		WHERE row_num BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum}) * #{amount};
 		]]>
+	</select> -->
+	
+	<select id="getListWithPaging" resultType="com.zerock.domain.BoardVO">
+		<![CDATA[
+		SELECT * 
+		FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY bno) AS row_num
+			  FROM tbl_board) AS numbered_rows
+		WHERE
+		]]>
+		<include refid="criteria"></include>
+		<![CDATA[
+		row_num BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum}) * #{amount}
+		]]>
 	</select>
 	
 	<select id="getTotalCount" resultType="int">
-		SELECT count(*) FROM tbl_board
+	<![CDATA[ 
+		SELECT 
+			COUNT(*) 
+		FROM 
+			tbl_board 
+		WHERE 
+	]]>
+	<include refid="criteria"></include>
+	<![CDATA[ 
+			bno > 0
+	]]>
 	</select>
 	
-	<select id="read" resultType="com.zerock.domain.BoardVO">
+	<select id="selectByKey" resultType="com.zerock.domain.BoardVO">
 		<![CDATA[
 		select * from tbl_board where bno = #{bno}
 		]]>
@@ -36,19 +80,6 @@
 		values(#{title}, #{content}, #{writer})
 		]]>
 	</insert>
-	
-	<!-- <insert id="insertSelectKey"> !!오라클용 쿼리!!
-		<selectKey keyProperty="bno" order="BEFORE"
-			resultType="long">
-		<![CDATA[
-			select seq_board.nextval from dual	
-		]]>
-		</selectKey>
-		<![CDATA[
-		insert into tbl_board(title, content, writer)
-		values(#{title}, #{content}, #{writer})
-		]]>
-	</insert> -->
 	
 	<insert id="insertSelectKey" parameterType="com.zerock.domain.BoardVO" useGeneratedKeys="true" keyProperty="bno">
 		insert into tbl_board(title, content, writer)
@@ -64,7 +95,10 @@
 	<update id="update">
 		<![CDATA[
 		UPDATE tbl_board
-		SET title = #{title}, content = #{content}, writer = #{writer}, updateDate = current_timestamp
+		SET title = #{title}, 
+		content = #{content}, 
+		writer = #{writer}, 
+		updateDate = current_timestamp
 		WHERE bno = #{bno}
 		]]>
 	</update>

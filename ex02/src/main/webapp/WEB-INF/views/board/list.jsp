@@ -44,21 +44,22 @@
                             </table>
                             
                             <!-- 서치폼 시작 -->
-                            <form id="seachForm" method="get" action="/board/list">
+                            <form id="searchForm" method="get" action="/board/list">
 				               <select name="type">
-				                  <option value="">--</option>
-				                  <option value="T">제목</option>
-				                  <option value="C">내용</option>
-				                  <option value="W">작성자</option>
-				                  <option value="TC">제목 + 내용</option>
-				                  <option value="TW">내용 + 작성자</option>
-				                  <option value="CW">내용 + 작성자</option>
-				                  <option value="TCW">제목 + 내용 + 작성자</option>
-				               </select> <input type="text" name="keyword" /> <input type="hidden"
-				                  name="pageNum" value="${pageMaker.cri.pageNum}" /> <input
-				                  type="hidden" name="amount" value="${pageMaker.cri.amount}" />
+				                  <option value="" ${pageMaker.cri.type == null ? 'selected' :''}>--</option>
+								  <option value="T" ${pageMaker.cri.type eq 'T' ? 'selected' :''}>제목</option>
+							      <option value="C" ${pageMaker.cri.type eq 'C' ? 'selected' :''}>내용</option>
+							      <option value="W" ${pageMaker.cri.type eq 'W' ? 'selected' :''}>작성자</option>
+								  <option value="TC" ${pageMaker.cri.type eq 'TC' ? 'selected' :''}>제목 + 내용</option>
+								  <option value="TW" ${pageMaker.cri.type eq 'TW' ? 'selected' :''}>제목 + 작성자</option>
+							      <option value="CW" ${pageMaker.cri.type eq 'CW' ? 'selected' :''}>내용 + 작성자</option>
+								  <option value="TCW" ${pageMaker.cri.type eq 'TCW' ? 'selected' :''}>제목 + 내용 + 작성자</option>
+				               </select>
+				               <input type="text" name="keyword" />
+				               <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}" /> 
+				               <input type="hidden" name="amount" value="${pageMaker.cri.amount}" />
 				               <button>검색</button>
-				            </form>        
+				            </form>
                             <!-- 서치폼 끝 -->
 				            
                             <!-- 페이지네이션 시작 -->
@@ -88,6 +89,8 @@
                             <form id="actionForm" method="get" action="/board/list">
                             	<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
                             	<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+                            	<input type="hidden" name="type" value="<c:out value="${pageMaker.cri.type}"/>">
+						        <input type="hidden" name="keyword" value="<c:out value="${pageMaker.cri.keyword}"/>">
                             </form>
                             
                             
@@ -112,6 +115,7 @@
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-12 -->
+            	</div>
             </div>
             <!-- /.row -->
 <%@include file="../includes/footer.jsp" %>
@@ -177,6 +181,26 @@ $(document).ready(function() {
 		actionForm.attr("action", "/board/get");
 		actionForm.submit();
 	});
+	
+	var searchForm = $("#searchForm");
+ 	
+ 	$("#searchForm button").on("click", function(e){
+ 		
+ 		if(!searchForm.find("option:selected").val()){
+ 			alert("검색종류를 선택하세요");
+ 			return false;
+ 		}
+ 		
+ 		if(!searchForm.find("input[name='keyword']").val()){
+ 			alert("키워드를 입력하세요");
+ 			return false;
+ 		}
+ 		
+ 		searchForm.find("input[name='pageNum']").val("1");
+ 		
+ 		e.preventDefault();
+ 		searchForm.submit();
+ 	})
 });
 
 </script>

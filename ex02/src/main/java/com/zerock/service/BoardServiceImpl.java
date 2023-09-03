@@ -35,25 +35,25 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardVO get(long bno) {
 		log.info("get : " + bno);
-		return mapper.read(bno);
+		return mapper.selectByKey(bno);
 	}
 
 	@Override
 	public boolean modify(BoardVO board) {
 		log.info("modify : " + board);
-		return mapper.update(board) == 1;
+		return (mapper.update(board) >= 1);
 	}
 
 	@Override
 	public boolean remove(long bno) {
 		log.info("remove : " + bno);
-		return mapper.delete(bno) == 1;
+		return (mapper.delete(bno) >= 1);
 	}
 
 	@Override
-	public int getCount() {
+	public int getTotal(Criteria cri) {
 		log.info("전체 숫자 카운트");
-		return mapper.getTotalCount();
+		return mapper.getTotalCount(cri);
 	}
 
 }

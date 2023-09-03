@@ -31,6 +31,10 @@
 							<label>작성자</label>
 							<input class="form-control" name="writer" value="${board.writer}" readonly="readonly">
 						</div>
+	               		<input type="hidden" name="pageNum" value="${cri.pageNum}">
+	                	<input type="hidden" name="amount" value="${cri.amount}">
+	               		<input type="hidden" name="type" value="${cri.type}">
+	                	<input type="hidden" name="keyword" value="${cri.keyword}">
 						<button data-oper="modify">수정하기</button><button data-oper="remove">삭제하기</button>
 					</form>
 				</div>
@@ -51,12 +55,21 @@ $(() => {
 		var operation = $(this).data("oper");
 		
 		//alert($(this));
-		//alert(operation);
+		console.log(operation);
 		
 		if (operation == 'remove'){
 			formObj.attr("action", "/board/remove")
+		} else if (operation == 'list') {
+			//리스트로 이동
+			formObj.attr("action", "/board/list").attr("method", "get");
+			var pageNumTag = $("input[name='pageNum']").clone();
+			var amountTag = $("input[name='amount']").clone;
+			
+			formObj.empty();
+			formObj.append(pageNumTag);
+			formObj.append(amountTag);
 		}
 		formObj.submit();
 	});
-})
+});
 </script>
