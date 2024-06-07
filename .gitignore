@@ -13,6 +13,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+# target 폴더 제외 : Maven 빌드 결과인 jar, war 저장 => 빌드할 때마다 생기므로 git에 업로드 필요 없다. 
+*/target/*
 
 # External tool builders
 .externalToolBuilders/
